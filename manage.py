@@ -1,22 +1,22 @@
-#!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
-import os
-import sys
+def predictAction(height, dist, pipe_height, model_num):
+    global currentPool
+    # The height, dist and pipe_height must be between 0 to 1 (Scaled by SCREENHEIGHT)
+    height = min(SCREENHEIGHT, height) / SCREENHEIGHT - 0.5
+    dist = dist / 450 - 0.5  # Max pipe distance from player will be 450
+    pipe_height = min(SCREENHEIGHT, pipe_height) / SCREENHEIGHT - 0.5
+    neural_input = np.asarray([height, dist, pipe_height])
+    neural_input = np.atleast_2d(neural_input)
+    output_prob = currentPool[model_num].predict(neural_input, 1)[0]
+    if output_prob[0] <= 0.5:
+        # Perform the jump action
+        return 1
+    return 2
 
 
-def main():
-    """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangoRest.settings')
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-    execute_from_command_line(sys.argv)
+# Initialize all the models
+currentPool = createModel(totalPlayers)
+for idx in range(totalPlayers):
+    fitness.append(-100)
 
+Images = {}
 
-if __name__ == '__main__':
-    main()
